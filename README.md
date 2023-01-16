@@ -20,7 +20,8 @@ lxd init
 #you can use all the defaults
 
 #Add new storge pool called docker (docker needs btrfs to work properly, so we named its storage pool docker)
-lxc storage create docker btrfs source=/var/lxd/disks size=30GB
+#default size is 30GB. we increse it to 50GB for our need
+lxc storage create docker btrfs size=50GB
 ```
 
 
