@@ -56,7 +56,7 @@ After=network-online.target
 [Service]
 Type=oneshot
 WorkingDirectory=/srv/github-actions/
-ExecStartPre=/usr/bin/sudo -u ubuntu -i /srv/github-actions/config.sh --url $RUNNER_URL --token \$GH_RUNNER_TOKEN --unattended --ephemeral --labels=$LABELS
+ExecStartPre=/usr/bin/sudo -u ubuntu -i /srv/github-actions/config.sh --url $RUNNER_URL --token \$GH_RUNNER_TOKEN --unattended --ephemeral --labels "$LABELS"
 ExecStart=-/usr/bin/sudo -u ubuntu -i /srv/github-actions/run.sh
 ExecStartPost=/usr/sbin/poweroff
 
