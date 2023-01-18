@@ -1,0 +1,39 @@
+#!/bin/bash
+LXD_CONTAINER=$1
+RUNNER_URL=$2
+GH_RUNNER_TOKEN=$3
+LABELS=$4
+
+
+# This is done outside the scope of the LXD container because exporting variables is not working as expected
+_PROTO="$(echo "${RUNNER_URL}" | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+_URL="$(echo "${RUNNER_URL/${_PROTO}/}")"
+_PATH="$(echo "${_URL}" | grep / | cut -d/ -f2-)"
+
+#Create the github runner service
+(
+cat << EOF
+
+# Setup the systemd unit
+(
+cat << EOG
+[Unit]
+Description=github - Actions runner
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/github-actions/
+ExecStartPre=/usr/bin/sudo -u ubuntu -i /srv/github-actions/config.sh --url $RUNNER_URL --token $GH_RUNNER_TOKEN --unattended --ephemeral --labels "$LABELS"
+ExecStart=-/usr/bin/sudo -u ubuntu -i /srv/github-actions/run.sh
+ExecStartPost=/usr/sbin/poweroff
+
+[Install]
+WantedBy=multi-user.target
+EOG
+) > /etc/systemd/system/github-actions.service
+systemctl enable github-actions
+
+EOF
+) | lxc exec $LXD_CONTAINER /bin/sh

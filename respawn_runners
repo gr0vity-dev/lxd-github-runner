@@ -1,0 +1,39 @@
+#!/bin/bash
+LXD_CONTAINER=$1
+SPAWN_COUNT=$2
+RUNNER_URL=$3
+
+#TODO: ALERT if lxc command fails meaning lxd servcie is down
+
+####################
+# Disk space is not freed up automatically when a container is removed.
+# Free up disk space for any github- runner that is not active
+for container in $(lxc storage volume list docker | grep "github-.*| 0" |awk '{print $4}'); do lxc storage volume delete docker $container; done
+####################
+
+####################
+# Get currently running instances by repository and spawn new instances if they are below SPAWN_COUNT for that repository
+# Get all started gh-runners and lookup the registered repo in the containers github-actions.service and match it with RUNNER_URL
+CURRENT_REPO_RUNNER_COUNT=$(for c in $(lxc ls |grep github-.*RUNNING.*EPHEMERAL |awk '{print $2}'); do lxc exec $c cat /etc/systemd/system/github-actions.service | grep 'ExecStartPre.*--url.*' | awk '{print $7}'; done | grep "$RUNNER_URL" | wc -l)
+
+# Exit if no new runners need to be spawned
+if [ $((( $SPAWN_COUNT - $CURRENT_REPO_RUNNER_COUNT ))) -le 0 ]
+then    
+    exit 0
+else 
+SPAWN_COUNT=$((($SPAWN_COUNT - $CURRENT_REPO_RUNNER_COUNT)))
+fi
+####################
+
+#ephemeral github runners will be delisted (on github.com) after 1 day of being offline
+for i in $(seq ${SPAWN_COUNT})
+do
+    NAME=$(mktemp -u github-XXXXXXXX)
+    lxc copy ${LXD_CONTAINER} "${NAME}" --ephemeral
+    lxc start "${NAME}"
+    lxc storage volume create docker "${NAME}"
+    lxc config device add "${NAME}" docker disk pool=docker source="${NAME}" path=/var/lib/docker
+    lxc config set "${NAME}" security.nesting=true security.syscalls.intercept.mknod=true security.syscalls.intercept.setxattr=true
+    lxc restart "${NAME}"
+    echo "spanwed container ${NAME}"
+done
