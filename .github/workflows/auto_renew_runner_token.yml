@@ -12,8 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get token for self-hosted runner registration
-      - uses: roncsak/getRunnerToken@v1.0.2
-        uses: ./
+        uses: roncsak/getRunnerToken@v1.0.2
         id  : runnerRegistration
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
