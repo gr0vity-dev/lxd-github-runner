@@ -7,7 +7,7 @@ on: [push, pull_request]
 jobs:
 
   get_registration_token:
-    name: renew token
+    name: get token
     timeout-minutes: 2 
     runs-on: ubuntu-latest
     outputs:
