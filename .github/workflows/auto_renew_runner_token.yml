@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Use the token in subsequent steps
         run: |
-          echo "::add-mask::GH_RUNNER_TOKEN=$(curl \
+          echo "GH_RUNNER_TOKEN=$(curl \
           --location --request POST 'https://api.github.com/repos/gr0vity-dev/nano-node/actions/runners/registration-token' \
           --header 'Authorization: Bearer ${{ secrets.NANO_NODE_PAT }}' \
           | jq -r '.token')" >> $GITHUB_OUTPUT
@@ -24,7 +24,7 @@ jobs:
           host: ${{ secrets.GH_RUNNER_HOST }}
           username: ${{ secrets.GH_RUNNER_USER }}
           key: ${{ secrets.GH_RUNNER_PRV_KEY }}
-          script: ./git/lxd-github-actions/renew_runner_token gh-runner-nano-node https://github.com/gr0vity-dev/nano-node ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }}
+          script: ./git/lxd-github-actions/renew_runner_token gh-runner-nano-node https://github.com/gr0vity-dev/nano-node ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }} >> out.log
   
   renew_gh-runner_token_for_nano-speed-testsuite:
     name: renew reg token for nano-speed-testsuite
@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Use the token in subsequent steps
         run: |
-          echo "::add-mask::GH_RUNNER_TOKEN=$(curl \
+          echo "GH_RUNNER_TOKEN=$(curl \
           --location --request POST 'https://api.github.com/repos/gr0vity-dev/nano-speed-testsuite/actions/runners/registration-token' \
           --header 'Authorization: Bearer ${{ secrets.NANO_SPEED_TESTSUITE_FG_PAT }}' \
           | jq -r '.token')" >> $GITHUB_OUTPUT
@@ -44,4 +44,4 @@ jobs:
           host: ${{ secrets.GH_RUNNER_HOST }}
           username: ${{ secrets.GH_RUNNER_USER }}
           key: ${{ secrets.GH_RUNNER_PRV_KEY }}
-          script: ./git/lxd-github-actions/renew_runner_token gh-runner-nano-speed-testsuite https://github.com/gr0vity-dev/nano-speed-testsuite ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }}
+          script: ./git/lxd-github-actions/renew_runner_token gh-runner-nano-speed-testsuite https://github.com/gr0vity-dev/nano-speed-testsuite ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }} >> out.log
