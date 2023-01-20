@@ -6,30 +6,23 @@ on: [push, pull_request]
 #     - cron: '0/30 * * * *'  # "every 30 minutes
 jobs:
 
-  get_registration_token:
-    name: get token
+  renew_gh-runner_token:
+    name: renew token
     timeout-minutes: 2 
     runs-on: ubuntu-latest
-    outputs:
-      GH_RUNNER_TOKEN: ${{ steps.script.outputs.GH_RUNNER_TOKEN }}      
     steps:
       - name: Use the token in subsequent steps
-      - id: script
-        run : |   
+        run: |   
           echo "GH_RUNNER_TOKEN=$(curl \
           --location --request POST 'https://api.github.com/repos/gr0vity-dev/nano-node/actions/runners/registration-token' \
           --header 'Authorization: Bearer ${{ secrets.NANO_NODE_PAT }}' \
           | jq -r '.token')" >> $GITHUB_OUTPUT
-  renew_registration_token:
-    name: renew token
-    timeout-minutes: 2 
-    runs-on: ubuntu-latest      
-    steps:
+        id: get_token
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.GH_RUNNER_HOST }}
           username: ${{ secrets.GH_RUNNER_USER }}
           key: ${{ secrets.GH_RUNNER_PRV_LEY }}          
-          script: ./git/lxd-github-actions/renew_runner_token gh-runner https://github.com/gr0vity-dev/nano-node '${{ needs.get_registration_token.outputs.GH_RUNNER_TOKEN }}'
+          script: ./git/lxd-github-actions/renew_runner_token gh-runner https://github.com/gr0vity-dev/nano-node ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }}
 
