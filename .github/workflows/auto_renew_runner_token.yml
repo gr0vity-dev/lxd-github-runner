@@ -24,7 +24,7 @@ jobs:
           host: ${{ secrets.GH_RUNNER_HOST }}
           username: ${{ secrets.GH_RUNNER_USER }}
           key: ${{ secrets.GH_RUNNER_PRV_KEY }}
-          script: ./git/lxd-github-actions/renew_runner_token gh-runner https://github.com/gr0vity-dev/nano-node ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }}
+          script: ./git/lxd-github-actions/renew_runner_token gh-runner-nano-node https://github.com/gr0vity-dev/nano-node ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }}
   
   renew_gh-runner_token_for_nano-speed-testsuite:
     name: renew reg token for nano-speed-testsuite
@@ -44,4 +44,4 @@ jobs:
           host: ${{ secrets.GH_RUNNER_HOST }}
           username: ${{ secrets.GH_RUNNER_USER }}
           key: ${{ secrets.GH_RUNNER_PRV_KEY }}
-          script: ./git/lxd-github-actions/renew_runner_token gh-runner https://github.com/gr0vity-dev/nano-speed-testsuite ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }}
+          script: ./git/lxd-github-actions/renew_runner_token gh-runner-nano-speed-testsuite https://github.com/gr0vity-dev/nano-speed-testsuite ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }}
