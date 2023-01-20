@@ -13,7 +13,8 @@ jobs:
     steps:
       - name: Use the token in subsequent steps
         run: |
-          echo "::add-mask::GH_RUNNER_TOKEN=$(curl \
+          echo "::add-mask::$GH_RUNNER_TOKEN" 
+          echo "GH_RUNNER_TOKEN=$(curl \
           --location --request POST 'https://api.github.com/repos/gr0vity-dev/nano-node/actions/runners/registration-token' \
           --header 'Authorization: Bearer ${{ secrets.GH_PAT }}' \
           | jq -r '.token')" >> $GITHUB_OUTPUT
@@ -33,7 +34,8 @@ jobs:
     steps:
       - name: Use the token in subsequent steps
         run: |
-          echo "::add-mask::GH_RUNNER_TOKEN=$(curl \
+          echo "::add-mask::$GH_RUNNER_TOKEN" 
+          echo "GH_RUNNER_TOKEN=$(curl \
           --location --request POST 'https://api.github.com/repos/gr0vity-dev/nano-speed-testsuite/actions/runners/registration-token' \
           --header 'Authorization: Bearer ${{ secrets.GH_PAT }}' \
           | jq -r '.token')" >> $GITHUB_OUTPUT
