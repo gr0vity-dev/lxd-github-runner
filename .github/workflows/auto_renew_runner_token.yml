@@ -1,9 +1,9 @@
 name: Renew ephemeral self-hosted runner token
 
-#on: [push, pull_request]
-on:
-  schedule:
-    - cron: '0/30 * * * *'  # "every 30 minutes
+on: [push, pull_request]
+# on:
+#   schedule:
+#     - cron: '0/30 * * * *'  # "every 30 minutes
 jobs:
 
   renew_gh-runner_token_for_nano-node:
