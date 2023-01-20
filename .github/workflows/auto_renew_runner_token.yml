@@ -27,9 +27,9 @@ jobs:
     steps:
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.7
-          with:
-            host: ${{ secrets.GH_RUNNER_HOST }}
-            username: ${{ secrets.GH_RUNNER_USER }}
-            key: ${{ secrets.GH_RUNNER_PRV_LEY }}          
-            script: ./git/lxd-github-actions/renew_runner_token gh-runner https://github.com/gr0vity-dev/nano-node '${{ needs.get_registration_token.outputs.GH_RUNNER_TOKEN }}'
+        with:
+          host: ${{ secrets.GH_RUNNER_HOST }}
+          username: ${{ secrets.GH_RUNNER_USER }}
+          key: ${{ secrets.GH_RUNNER_PRV_LEY }}          
+          script: ./git/lxd-github-actions/renew_runner_token gh-runner https://github.com/gr0vity-dev/nano-node '${{ needs.get_registration_token.outputs.GH_RUNNER_TOKEN }}'
 
