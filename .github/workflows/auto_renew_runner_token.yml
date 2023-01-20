@@ -12,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Use the token in subsequent steps
-        run: |
-          echo "::add-mask::$GH_RUNNER_TOKEN" 
+        run: |          
           echo "GH_RUNNER_TOKEN=$(curl \
           --location --request POST 'https://api.github.com/repos/gr0vity-dev/nano-node/actions/runners/registration-token' \
           --header 'Authorization: Bearer ${{ secrets.GH_PAT }}' \
           | jq -r '.token')" >> $GITHUB_OUTPUT
+          echo "::add-mask::GH_RUNNER_TOKEN"
         id: get_token
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.7
@@ -33,8 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Use the token in subsequent steps
-        run: |
-          echo "::add-mask::$GH_RUNNER_TOKEN" 
+        run: | 
           echo "GH_RUNNER_TOKEN=$(curl \
           --location --request POST 'https://api.github.com/repos/gr0vity-dev/nano-speed-testsuite/actions/runners/registration-token' \
           --header 'Authorization: Bearer ${{ secrets.GH_PAT }}' \
@@ -46,4 +45,4 @@ jobs:
           host: ${{ secrets.GH_RUNNER_HOST }}
           username: ${{ secrets.GH_RUNNER_USER }}
           key: ${{ secrets.GH_RUNNER_PRV_KEY }}
-          script: ./git/lxd-github-actions/renew_runner_token gh-runner-nano-speed-testsuite https://github.com/gr0vity-dev/nano-speed-testsuite ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }}
+          script: ./git/lxd-github-actions/renew_runner_token gh-runner-nano-speed-testsuite https://github.com/gr0vity-dev/nano-speed-testsuite ::add-mask::${{ steps.get_token.outputs.GH_RUNNER_TOKEN }}
