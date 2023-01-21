@@ -1,9 +1,9 @@
 name: Renew ephemeral self-hosted runner token
 
-#on: [push, pull_request]
-on:
-  schedule:
-    - cron: '0/30 * * * *'  # "every 30 minutes
+on: [push, pull_request]
+# on:
+#   schedule:
+#     - cron: '0/30 * * * *'  # "every 30 minutes
 jobs:  
 
   renew_gh-runner_token_for_nano-node:
@@ -27,7 +27,7 @@ jobs:
           --header 'Authorization: Bearer ${{ secrets.GH_PAT }}' \
           | jq -r '.token')
           echo "::add-mask::$GH_RUNNER_TOKEN"
-          echo "::set-output name=GH_RUNNER_TOKEN::$GH_RUNNER_TOKEN"
+          echo "{GH_RUNNER_TOKEN}=$GH_RUNNER_TOKEN" >> $GITHUB_STATE
 
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.7
@@ -53,8 +53,8 @@ jobs:
           --location --request POST 'https://api.github.com/repos/gr0vity-dev/nano-speed-testsuite/actions/runners/registration-token' \
           --header 'Authorization: Bearer ${{ secrets.GH_PAT }}' \
           | jq -r '.token')
-          echo "::add-mask::$GH_RUNNER_TOKEN"
-          echo "::set-output name=GH_RUNNER_TOKEN::$GH_RUNNER_TOKEN"
+          echo "::add-mask::$GH_RUNNER_TOKEN"          
+          echo "{GH_RUNNER_TOKEN}=$GH_RUNNER_TOKEN}" >> $GITHUB_STATE
 
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.7
