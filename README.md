@@ -122,15 +122,16 @@ This workflows runs every 30 minutes and makes sure that the base-container alwa
 - converting your PAT into a registration-token for your self-hosted runner
 - ssh'ing into your workserver and update registration-token inside the base-container
 
-The following repo secrets need to be defined for the workflow to run properly: 
-	- secrets.GH_PAT (your personal access token used to create a registration-token for your repo)
-	- secrets.GH_RUNNER_HOST (work server ip address)
-	- secrets.GH_RUNNER_USER (work-server user)
-	- secrets.GH_RUNNER_PRV_KEY (private key to ssh into the workserver)
+The following repo secrets need to be defined for the workflow to run properly:
+- secrets.GH_PAT (your personal access token used to create a registration-token for your repo)
+- secrets.GH_RUNNER_HOST (work server ip address)
+- secrets.GH_RUNNER_USER (work-server user)
+- secrets.GH_RUNNER_PRV_KEY (private key to ssh into the workserver)
+
 Additionally make sure to replace the following variables with the relevant content:
-	- {OWNER} # your github user
-	- {REPO} # your repo that requires the self-hosted runner
-	- {work-server-gh-runner-name} # the gh-runner name you defined when running the `prepare-instance` script.
+- {OWNER} # your github user
+- {REPO} # your repo that requires the self-hosted runner
+- {work-server-gh-runner-name} # the gh-runner name you defined when running the `prepare-instance` script.
 
 ### 3) Create and renew self-hosted runners as soon as a workflow has finished
 
