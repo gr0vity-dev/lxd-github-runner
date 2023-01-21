@@ -4,16 +4,13 @@ SPAWN_COUNT=$2
 RUNNER_URL=$3
 
 #TODO: ALERT if lxc command fails meaning lxd servcie is down
-
-####################
-# Disk space is not freed up automatically when a container is removed.
-# Free up disk space for any github- runner that is not active
-for container #!/bin/bash
-LXD_CONTAINER=$1
-SPAWN_COUNT=$2
-RUNNER_URL=$3
-
-#TODO: ALERT if lxc command fails meaning lxd servcie is down
+BASE_CONTAINER_EXISTS=$(lxc ls |grep "$LXD_CONTAINER " |awk '{print $2}' |wc -l)
+if [ $BASE_CONTAINER_EXISTS -eq 0 ]
+then
+    echo "No base-container defined for '$LXD_CONTAINER' \
+          \n Please first run './prepare-instance $LXD_CONTAINER'"
+    exit 0
+fi
 
 ####################
 # Disk space is not freed up automatically when a container is removed.
