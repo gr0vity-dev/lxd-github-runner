@@ -4,7 +4,7 @@ LXD_CONTAINER=$1
 
 GH_RUNNER_VERSION="2.301.1"
 CONTAINER_DEPENDENCIES="ca-certificates curl gnupg lsb-release \
-                        python3.8-venv python3.8-dev gcc jq"
+                        python3.8-venv python3.8-dev build-essential gcc jq"
 
 #Exit early if the required base container already exists
 BASE_CONTAINER_EXISTS=$(lxc ls |grep "$LXD_CONTAINER " |awk '{print $2}' |wc -l)
