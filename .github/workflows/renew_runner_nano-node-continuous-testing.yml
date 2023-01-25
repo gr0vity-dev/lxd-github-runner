@@ -1,0 +1,41 @@
+name: Renew ephemeral self-hosted runner token
+
+#on: [push, pull_request]
+on:
+  schedule:
+    - cron: '0/30 * * * *'  # "every 30 minutes
+jobs:  
+
+  renew_gh-runner_token_for_nano-node:   
+    #The following variable needs to be defined : (make sure the base-container on the work-server is called 'gh-runner-{REPO_URI}')
+    # -  REPO_URI
+    #The following repo secrets need to be defined : 
+    # - secrets.GH_PAT (your personal access token)
+    # - secrets.GH_RUNNER_HOST (work server ip address)
+    # - secrets.GH_RUNNER_USER (work-server user)
+    # - secrets.GH_RUNNER_PRV_KEY (private key to ssh into the workserver)
+
+    name: renew reg token for nano-node
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use the token in subsequent steps
+        id: get_token
+        run: |
+          REPO_URI=nano-node-continuous-testing
+          echo "REPO_URI=$REPO_URI" >> $GITHUB_OUTPUT
+          GH_RUNNER_TOKEN=$(curl \
+          --location --request POST "https://api.github.com/repos/gr0vity-dev/$REPO_URI/actions/runners/registration-token" \
+          --header 'Authorization: Bearer ${{ secrets.GH_PAT }}' \
+          | jq -r '.token')
+          echo "::add-mask::$GH_RUNNER_TOKEN"
+          echo "::set-output name=GH_RUNNER_TOKEN::$GH_RUNNER_TOKEN"
+
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.GH_RUNNER_HOST }}
+          username: ${{ secrets.GH_RUNNER_USER }}
+          key: ${{ secrets.GH_RUNNER_PRV_KEY }}
+          script: ./git/lxd-github-actions/renew_runner_token gh-runner-${{ steps.get_token.outputs.REPO_URI }} https://github.com/gr0vity-dev/${{ steps.get_token.outputs.REPO_URI }} ${{ steps.get_token.outputs.GH_RUNNER_TOKEN }}
+  
