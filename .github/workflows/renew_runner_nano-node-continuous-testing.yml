@@ -24,6 +24,7 @@ jobs:
         run: |
           echo "REPO_URI=nano-node-continuous-testing" >> $GITHUB_OUTPUT 
           echo "https://api.github.com/repos/gr0vity-dev/$REPO_URI/actions/runners/registration-token"
+          echo "${{ steps.get_token.outputs.REPO_URI }}"
           GH_RUNNER_TOKEN=$(curl \
           --location --request POST "https://api.github.com/repos/gr0vity-dev/$REPO_URI/actions/runners/registration-token" \
           --header 'Authorization: Bearer ${{ secrets.GH_PAT }}' \
